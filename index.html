@@ -6,18 +6,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>3D Viewer</title>
+  <title>전체화면 테스트</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       width: 100vw;
       height: 100vh;
-      background: #000;
+      background: #111;
       overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
@@ -26,42 +22,74 @@
       width: 100%;
       height: 100%;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    iframe {
+    #test-image {
       width: 100%;
       height: 100%;
-      border: none;
+      object-fit: cover;
       display: block;
     }
 
-    /* 전체화면 토글 버튼 */
+    #label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0.85);
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+      background: rgba(0,0,0,0.45);
+      padding: 16px 24px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    #label span {
+      display: block;
+      font-size: 13px;
+      font-weight: 400;
+      margin-top: 6px;
+      color: rgba(255,255,255,0.55);
+    }
+
     #fullscreen-btn {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: 28px;
+      right: 28px;
       z-index: 9999;
-      width: 52px;
-      height: 52px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      border: none;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      background: rgba(20, 20, 20, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      transition: all 0.2s ease;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+      transition: opacity 0.3s ease, transform 0.15s ease;
       -webkit-tap-highlight-color: transparent;
       outline: none;
+      opacity: 1;
     }
 
     #fullscreen-btn:active {
-      transform: scale(0.9);
-      background: rgba(255, 255, 255, 0.3);
+      transform: scale(0.88);
     }
+
+    #fullscreen-btn.faded { opacity: 0.25; }
+    #fullscreen-btn:hover { opacity: 1 !important; }
 
     #fullscreen-btn svg {
       width: 22px;
@@ -71,74 +99,56 @@
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
-      transition: all 0.2s ease;
     }
 
-    /* 전체화면 아이콘 (expand) */
-    .icon-expand { display: block; }
+    .icon-expand   { display: block; }
     .icon-compress { display: none; }
-
-    /* 전체화면 상태일 때 아이콘 전환 */
-    body.is-fullscreen .icon-expand { display: none; }
+    body.is-fullscreen .icon-expand   { display: none; }
     body.is-fullscreen .icon-compress { display: block; }
 
-    /* 버튼 페이드 - 3초 후 반투명 */
-    #fullscreen-btn.faded {
-      opacity: 0.3;
-    }
-
-    #fullscreen-btn:hover,
-    #fullscreen-btn:active {
-      opacity: 1 !important;
-    }
-
-    /* 토스트 메시지 */
     #toast {
       position: fixed;
-      bottom: 90px;
-      right: 24px;
+      bottom: 100px;
+      right: 28px;
       z-index: 9998;
-      background: rgba(0,0,0,0.7);
+      background: rgba(10,10,10,0.78);
       color: #fff;
       font-size: 13px;
-      padding: 8px 14px;
-      border-radius: 20px;
+      padding: 9px 16px;
+      border-radius: 24px;
       pointer-events: none;
       opacity: 0;
-      transform: translateY(8px);
-      transition: all 0.3s ease;
+      transform: translateY(6px);
+      transition: all 0.25s ease;
       white-space: nowrap;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
     }
-
-    #toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    #toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
 
   <div id="viewer">
-    <iframe
-      id="stream-frame"
-      src="https://streams.vagon.io/streams/4b7becfc-d311-4c2c-9021-8781823aaf73"
-      allowfullscreen
-      allow="autoplay; fullscreen; microphone; camera"
-      scrolling="no">
-    </iframe>
+    <img
+      id="test-image"
+      src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1920&q=80"
+      alt="테스트 이미지"
+    />
+    <div id="label">
+      전체화면 테스트 중
+      <span>우측 하단 버튼을 눌러보세요</span>
+    </div>
   </div>
 
-  <!-- 전체화면 토글 버튼 -->
-  <button id="fullscreen-btn" onclick="toggleFullscreen()" title="전체화면">
-    <!-- Expand 아이콘 -->
+  <button id="fullscreen-btn" onclick="toggleFullscreen()" title="전체화면 토글">
     <svg class="icon-expand" viewBox="0 0 24 24">
       <polyline points="15 3 21 3 21 9"/>
       <polyline points="9 21 3 21 3 15"/>
       <line x1="21" y1="3" x2="14" y2="10"/>
       <line x1="3" y1="21" x2="10" y2="14"/>
     </svg>
-    <!-- Compress 아이콘 -->
     <svg class="icon-compress" viewBox="0 0 24 24">
       <polyline points="4 14 10 14 10 20"/>
       <polyline points="20 10 14 10 14 4"/>
@@ -147,7 +157,6 @@
     </svg>
   </button>
 
-  <!-- 토스트 -->
   <div id="toast"></div>
 
   <script>
@@ -155,29 +164,22 @@
     const toast = document.getElementById('toast');
     let fadeTimer = null;
 
-    // 버튼 자동 페이드
     function startFade() {
       clearTimeout(fadeTimer);
       btn.classList.remove('faded');
-      fadeTimer = setTimeout(() => {
-        btn.classList.add('faded');
-      }, 3000);
+      fadeTimer = setTimeout(() => btn.classList.add('faded'), 3000);
     }
-
     startFade();
 
-    // 화면 터치/클릭 시 버튼 다시 보이기
-    document.addEventListener('touchstart', startFade);
+    document.addEventListener('touchstart', startFade, { passive: true });
     document.addEventListener('mousemove', startFade);
 
-    // 토스트 표시
     function showToast(msg) {
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      setTimeout(() => toast.classList.remove('show'), 2200);
     }
 
-    // 전체화면 토글
     function toggleFullscreen() {
       const el = document.documentElement;
       const isFs = !!(
@@ -187,32 +189,30 @@
       );
 
       if (!isFs) {
-        // 전체화면 진입
         const req =
           el.requestFullscreen ||
           el.webkitRequestFullscreen ||
           el.mozRequestFullScreen ||
           el.msRequestFullscreen;
+
         if (req) {
-          req.call(el).then(() => {
-            document.body.classList.add('is-fullscreen');
-            showToast('전체화면 모드');
-            // 가로 방향 잠금 시도 (Android 지원)
-            if (screen.orientation && screen.orientation.lock) {
-              screen.orientation.lock('landscape').catch(() => {});
-            }
-          }).catch(() => {
-            // 전체화면 API 미지원 시 iOS 대응
-            document.body.classList.add('is-fullscreen');
-            showToast('화면을 가로로 회전하세요');
-          });
+          req.call(el)
+            .then(() => {
+              document.body.classList.add('is-fullscreen');
+              showToast('✅ 전체화면 ON');
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+              }
+            })
+            .catch(() => {
+              document.body.classList.add('is-fullscreen');
+              showToast('📱 화면을 가로로 회전하세요');
+            });
         } else {
-          // iOS Safari 등 API 미지원
           document.body.classList.add('is-fullscreen');
-          showToast('화면을 가로로 회전하세요');
+          showToast('📱 화면을 가로로 회전하세요');
         }
       } else {
-        // 전체화면 해제
         const exit =
           document.exitFullscreen ||
           document.webkitExitFullscreen ||
@@ -220,25 +220,23 @@
           document.msExitFullscreen;
         if (exit) exit.call(document);
         document.body.classList.remove('is-fullscreen');
-        showToast('전체화면 해제');
+        showToast('전체화면 OFF');
         if (screen.orientation && screen.orientation.unlock) {
           screen.orientation.unlock();
         }
       }
-
       startFade();
     }
 
-    // 전체화면 상태 변경 감지
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        document.body.classList.remove('is-fullscreen');
-      }
-    });
-    document.addEventListener('webkitfullscreenchange', () => {
-      if (!document.webkitFullscreenElement) {
-        document.body.classList.remove('is-fullscreen');
-      }
+    ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange'].forEach(evt => {
+      document.addEventListener(evt, () => {
+        const isFs = !!(
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement
+        );
+        document.body.classList.toggle('is-fullscreen', isFs);
+      });
     });
   </script>
 </body>
